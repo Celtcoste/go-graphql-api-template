@@ -1,0 +1,28 @@
+type User {
+  uuid:                                     UUID!
+  pseudo:                                   String!
+  description:                              String
+  emailVerified:                            Boolean!
+  cguAccepted:                              Boolean!
+  provider:                                 String!
+  offerNumber:                              Int!
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges:    [UserEdge!]!
+}
+
+type UserEdge {
+  cursor:   String!
+  node:     User
+}
+
+input UserUpdateInput {
+  description:        String
+  image:              Upload
+  provider:           String
+  acceptCGU:          Boolean
+  verifyUserEmail:    Boolean
+  notificationToken:  String
+}
