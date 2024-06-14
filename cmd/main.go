@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"os"
 
-	"github.com/Celtcoste/server-graphql/graph/generated"
 	"github.com/celtcoste/go-graphql-api-template/internal"
 	"github.com/celtcoste/go-graphql-api-template/internal/database"
+	"github.com/celtcoste/go-graphql-api-template/internal/graph"
+	"github.com/celtcoste/go-graphql-api-template/internal/graph/generated"
 	"github.com/celtcoste/go-graphql-api-template/internal/repository"
 	"github.com/celtcoste/go-graphql-api-template/internal/server"
 	"github.com/celtcoste/go-graphql-api-template/pkg/cloud/cloudLogger"
@@ -17,7 +19,9 @@ import (
 )
 
 func loadConfiguration() *internal.Configuration {
-	configuration, err := internal.NewConfiguration()
+	directory := flag.String("configDir", "./", "massage.yaml file directory")
+	flag.Parse()
+	configuration, err := internal.NewConfiguration(*directory)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)

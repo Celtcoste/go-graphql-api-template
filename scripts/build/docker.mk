@@ -12,7 +12,7 @@ DOCKER_BUILD_OPTS   := -f scripts/build/api-template.dockerfile
 DOCKER_RUN_OPTS     := --rm -p 80:8000
 DOCKER_REGISTRY     := 
 DOCKER_TAG          := latest
-DOCKER_IMAGE 		:= $(DOCKER_REGISTRY)/api-template
+DOCKER_IMAGE 		:= $(DOCKER_REGISTRY)/api-template:${DOCKER_TAG}
 
 export DOCKER_IMAGE
 export DOCKER_TAG

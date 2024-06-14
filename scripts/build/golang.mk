@@ -26,7 +26,7 @@ golang-generate:
 	$(GOLANG_BUILD_OPTS) $(GOLANG_BIN) generate ./...
 
 golang-build: $(BIN) golang-get golang-generate
-	$(GOLANG_BUILD_OPTS) $(GOLANG_BIN) build $(GOLANG_LDFFLAGS) -o $(BIN)/api_template ./cmd/main
+	$(GOLANG_BUILD_OPTS) $(GOLANG_BIN) build $(GOLANG_LDFFLAGS) -o $(BIN)/api_template ./cmd/main.go
 	chmod +x $(BIN)/api_template
 
 golang-build-with-vendor: $(BIN)

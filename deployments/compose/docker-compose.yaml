@@ -12,13 +12,13 @@ services:
       - "api-template"
     volumes:
       - "../../scripts/sql/operations/local_migration.sql:/docker-entrypoint-initdb.d/0_init.sql"
-      - "../../scripts/sql/operations/load_dev_mocks.sql:/docker-entrypoint-initdb.d/1_init.sql"
+      - "../../scripts/sql/operations/load_dev_mock.sql:/docker-entrypoint-initdb.d/1_init.sql"
     ports:
-      - 3306:3306
+      - 3307:3307
   api-template:
     build:
       context: ../..
-      dockerfile: ../../scripts/build/api-template.dockerfile
+      dockerfile: scripts/build/api-template.dockerfile
     depends_on:
       - "mysql"
       - "redis"

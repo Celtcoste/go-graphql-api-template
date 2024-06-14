@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -13,14 +14,19 @@ import (
 	"github.com/celtcoste/go-graphql-api-template/internal/client"
 	"github.com/celtcoste/go-graphql-api-template/internal/dataloader"
 	"github.com/celtcoste/go-graphql-api-template/internal/graph/generated"
+	"github.com/celtcoste/go-graphql-api-template/internal/graph/model"
 	"github.com/celtcoste/go-graphql-api-template/internal/repository"
 	"github.com/celtcoste/go-graphql-api-template/pkg/cloud/cloudLogger"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/translation"
 	"github.com/gorilla/mux"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
+
+//"github.com/Celtcoste/server-graphql/graph/generated"
 
 const (
 	complexityExtensionKey = "cost" // named cost to be the same as PIPE
@@ -114,7 +120,7 @@ func HandleGraphQLServerError(server *handler.Server, logger *cloudLogger.Logger
 			return gqlutil.InternalServerErrorf("%v", e)
 		}
 	})
-	/*server.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
+	server.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
 		span := trace.SpanFromContext(ctx)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "graphql error")
@@ -141,7 +147,7 @@ func HandleGraphQLServerError(server *handler.Server, logger *cloudLogger.Logger
 		}
 		log.Println("err = ", err)
 		return gqlutil.ErrorPresenter(ctx, err)
-	})*/
+	})
 }
 
 // DefineDirectives implements Graph directives
@@ -167,9 +173,9 @@ func DefineDirectives(config *generated.Config, repositories *repository.Contain
 		return next(ctx)
 	}
 
-	/*config.Directives.Locale = func(ctx context.Context, obj interface{}, next graphql.Resolver, lang model.Languages) (interface{}, error) {
+	config.Directives.Locale = func(ctx context.Context, obj interface{}, next graphql.Resolver, lang model.Languages) (interface{}, error) {
 		return next(context.WithValue(ctx, "locale", &lang))
-	}*/
+	}
 }
 
 // ApplyGraphQLCustomComplexityCalculation handles specific query complexity
@@ -207,9 +213,9 @@ func ApplyGraphQLCustomComplexityCalculation(config *generated.Config) {
 
 	// Tags
 	/*config.Complexity.Tag.Contents = func(childComplexity int, orderBy *model.TagContentOrder, first int, after *string) int {
-		return extraSQLQueryCost + childComplexity*first
-	}
-	config.Complexity.Tag.Collections = func(childComplexity int, mode *model.CollectionMode, orderBy *model.TagCollectionOrder, first int, after *string) int {
-		return extraSQLQueryCost + childComplexity*first
-	}*/
+	  	return extraSQLQueryCost + childComplexity*first
+	  }
+	  config.Complexity.Tag.Collections = func(childComplexity int, mode *model.CollectionMode, orderBy *model.TagCollectionOrder, first int, after *string) int {
+	  	return extraSQLQueryCost + childComplexity*first
+	  }*/
 }

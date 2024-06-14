@@ -1,9 +1,10 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 
-	"github.com/celtcoste/go-graphql-api-template/internal/util"
+	"github.com/spf13/viper"
 )
 
 // Configuration provide information relative to
@@ -29,13 +30,22 @@ func (configuration *Configuration) URI() string {
 
 // NewConfiguration is a factory function for creating
 // a DatabaseConfiguration instance using a viper sub tree.
-func NewConfiguration() (configuration *Configuration, err error) {
+func NewConfiguration(v *viper.Viper) (configuration *Configuration, err error) {
+	if v == nil {
+		return nil, errors.New("viper is nil")
+	}
+	v.BindEnv("database.address", "DATABASE_ADDRESS")
+	v.BindEnv("database.name", "DATABASE_NAME")
+	v.BindEnv("database.password", "DATABASE_PASSWORD")
+	v.BindEnv("database.port", "DATABASE_PORT")
+	v.BindEnv("database.username", "DATABASE_USERNAME")
+	v.SetDefault("database.port", 3306)
 	configuration = &Configuration{
-		Address:  util.GetEnvStr("DATABASE_ADDRESS"),
-		Name:     util.GetEnvStr("DATABASE_NAME"),
-		Password: util.GetEnvStr("DATABASE_PASSWORD"),
-		Port:     util.GetEnvInt("DATABASE_PORT"),
-		Username: util.GetEnvStr("DATABASE_USERNAME"),
+		Address:  v.GetString("database.address"),
+		Name:     v.GetString("database.name"),
+		Password: v.GetString("database.password"),
+		Port:     v.GetInt("database.port"),
+		Username: v.GetString("database.username"),
 	}
 	// NOTE: add data validation here if needed.
 	return configuration, nil

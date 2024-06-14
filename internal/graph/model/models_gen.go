@@ -7,12 +7,28 @@ import (
 	"io"
 	"strconv"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil"
 )
+
+type Mutation struct {
+}
+
+type Query struct {
+}
 
 type UserConnection struct {
 	PageInfo *gqlutil.PageInfo `json:"pageInfo"`
 	Edges    []*UserEdge       `json:"edges"`
+}
+
+type UserUpdateInput struct {
+	Description       *string         `json:"description,omitempty"`
+	Image             *graphql.Upload `json:"image,omitempty"`
+	Provider          *string         `json:"provider,omitempty"`
+	AcceptCgu         *bool           `json:"acceptCGU,omitempty"`
+	VerifyUserEmail   *bool           `json:"verifyUserEmail,omitempty"`
+	NotificationToken *string         `json:"notificationToken,omitempty"`
 }
 
 type Languages string

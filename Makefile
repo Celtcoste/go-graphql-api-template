@@ -24,3 +24,6 @@ push: docker-push
 # Compose targets.
 run: compose-up
 stop: compose-down
+
+# Local
+run-local: golang-run

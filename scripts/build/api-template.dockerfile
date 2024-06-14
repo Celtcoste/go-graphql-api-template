@@ -1,6 +1,6 @@
 # ----------------------------------------------------
 # Application build stage
-FROM golang:1.18-alpine as builder
+FROM golang:1.19-alpine as builder
 
 WORKDIR /go/src/github.com/celtcoste/go-graphql-api-template
 COPY ./ ./
@@ -18,17 +18,10 @@ RUN apk update && apk add ca-certificates
 RUN adduser -S api-template
 
 # ----------------------------------------------------
-# go-graphql-api-template base image
-FROM base AS api-template-base
+# api-template base image
+FROM base AS api-template
 
-COPY --from=builder /go/src/github.com/celtcoste/go-graphql-api-template .
+COPY --from=builder /go/src/github.com/celtcoste/go-graphql-api-template/api_template .
 
 USER api-template
-ENTRYPOINT [ "/app/go-graphql-api-template" ]
-
-# ----------------------------------------------------
-# go-graphql-api-template production image (with locales)
-FROM go-graphql-api-template-base AS go-graphql-api-template
-
-USER go-graphql-api-template
-ENTRYPOINT [ "/app/go-graphql-api-template" ] 
+ENTRYPOINT [ "/app/api_template" ]

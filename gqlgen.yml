@@ -47,7 +47,7 @@ autobind:
 models:
   ID:
     model:
-      - github.com/celtcoste/go-graphql-api-template/pkg/util/golang-gqlutil.ID
+      - github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil.ID
   Seed:
     model:
       - github.com/99designs/gqlgen/graphql.Int64
@@ -58,7 +58,7 @@ models:
       - github.com/99designs/gqlgen/graphql.Int32
   PageInfo:
     model:
-      - github.com/celtcoste/go-graphql-api-template/pkg/util/golang-gqlutil.PageInfo
+      - github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil.PageInfo
   UUID:
     model:
       - github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil.UUID
