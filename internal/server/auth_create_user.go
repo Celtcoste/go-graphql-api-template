@@ -14,13 +14,13 @@ func CreateUserRest(w http.ResponseWriter, r *http.Request, repositories *reposi
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if _, err := repositories.User.GetByPseudo(username); err == nil {
+	if _, err := repositories.User.GetByName(username); err == nil {
 		w.WriteHeader(http.StatusConflict)
 		jsonResponse, _ := json.Marshal("Username already taken")
 		w.Write(jsonResponse)
 		return
 	}
-	user, err := repositories.User.Create(username, "")
+	user, err := repositories.User.Create(username)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		jsonResponse, _ := json.Marshal(err)
@@ -30,12 +30,8 @@ func CreateUserRest(w http.ResponseWriter, r *http.Request, repositories *reposi
 	jsonResponse, _ := json.Marshal(
 		map[string]interface{}{
 			"userInfo": map[string]interface{}{
-				"uuid":          user.UUID,
-				"pseudo":        user.Pseudo,
-				"description":   user.Description,
-				"emailVerified": user.EmailVerified,
-				"cguAccepted":   user.CGUAccepted,
-				"provider":      user.Provider,
+				"uuid": user.UUID,
+				"name": user.Name,
 			},
 		})
 	w.Write(jsonResponse)

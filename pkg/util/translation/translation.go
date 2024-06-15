@@ -49,7 +49,7 @@ func NewTranslator(path string, locales []string) *Translator {
 		// Setting locale
 		localeObjs[tag.String()] = gotext.NewLocale(path, locale)
 		// AddDomain loads and parse the po file, hence the goroutine
-		// to keep massage startup fast
+		// to keep api-template startup fast
 		go localeObjs[tag.String()].AddDomain("lang")
 	}
 	return &Translator{

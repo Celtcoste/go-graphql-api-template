@@ -38,14 +38,7 @@ CREATE TABLE `language` (
 
 CREATE TABLE `user` (
     `uuid` varchar(36) UNIQUE PRIMARY KEY NOT NULL,
-    `pseudo` varchar(64) NOT NULL,
-    `description` tinytext,
-    `firebase_id` varchar(36) UNIQUE NOT NULL,
-    `notification_token` varchar(256) NULL,
-    `image_uuid` varchar(36),
-    `email_verified` boolean default false,
-    `cgu_accepted` boolean default false,
-    `provider` enum('google', 'apple') NOT NULL,
+    `name` varchar(64) NOT NULL,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

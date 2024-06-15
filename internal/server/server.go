@@ -19,17 +19,15 @@ import (
 // ApiTemplateServer is the application entrypoint
 type ApiTemplateServer struct {
 	configuration *Configuration
-	logger        *cloudLogger.Logger
 	Router        *mux.Router
 }
 
 // NewApiTemplateServer create a server instance with a router
-func NewApiTemplateServer(configuration *Configuration, logger *cloudLogger.Logger) *ApiTemplateServer {
+func NewApiTemplateServer(configuration *Configuration) *ApiTemplateServer {
 	router := mux.NewRouter()
 	router.Use(cloudLogger.ParseTraceContextMiddleware)
 	return &ApiTemplateServer{
 		configuration: configuration,
-		logger:        logger,
 		Router:        router,
 	}
 }
@@ -47,7 +45,7 @@ func (server *ApiTemplateServer) Start(ctx context.Context) {
 	}
 	go func() {
 		if err := h2server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			server.logger.Sugar().Fatal(err)
+			log.Fatal(err)
 		}
 	}()
 
@@ -55,7 +53,7 @@ func (server *ApiTemplateServer) Start(ctx context.Context) {
 	go func() {
 		util.RunHealthServer(flag.String("health", "0.0.0.0:"+server.configuration.HealthPort, "Health service address."), errChan)
 	}()
-	server.logger.Sugar().Infof("api-template server listening @ http://%s/", addr)
+	log.Printf("api-template server listening @ http://%s/", addr)
 	// NOTE: Block and listen to interruption signals
 	exit := make(chan os.Signal, 1)
 	signal.Notify(exit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGINT)
@@ -64,7 +62,7 @@ func (server *ApiTemplateServer) Start(ctx context.Context) {
 	ctx, cancel := context.WithTimeout(ctx, server.configuration.ShutdownTimeout)
 	defer cancel()
 	if err := h2server.Shutdown(ctx); err != nil {
-		server.logger.Sugar().Fatalf("Graceful shutdown failed: %v\n", err)
+		log.Fatalf("Graceful shutdown failed: %v\n", err)
 	}
-	server.logger.Sugar().Infof("api-template server stopped")
+	log.Printf("api-template server stopped")
 }

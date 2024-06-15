@@ -16,7 +16,6 @@ import (
 	"github.com/celtcoste/go-graphql-api-template/internal/graph/generated"
 	"github.com/celtcoste/go-graphql-api-template/internal/graph/model"
 	"github.com/celtcoste/go-graphql-api-template/internal/repository"
-	"github.com/celtcoste/go-graphql-api-template/pkg/cloud/cloudLogger"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/translation"
 	"github.com/gorilla/mux"
@@ -34,11 +33,11 @@ const (
 )
 
 // NewGraphQLServer instanciates a new gqlgen server from a config and a logger.
-func NewGraphQLServer(config generated.Config, logger *cloudLogger.Logger, repositories *repository.Container) *handler.Server {
+func NewGraphQLServer(config generated.Config, repositories *repository.Container) *handler.Server {
 	ApplyGraphQLCustomComplexityCalculation(&config)
 	DefineDirectives(&config, repositories)
 	server := handler.NewDefaultServer(generated.NewExecutableSchema(config))
-	HandleGraphQLServerError(server, logger)
+	HandleGraphQLServerError(server)
 	server.Use(extension.FixedComplexityLimit(queryComplexityLimit))
 	var mb int64 = 1 << 20
 	server.AddTransport(transport.POST{})
@@ -79,7 +78,7 @@ func SetupGraphQLRoutes(
 
 // HandleGraphQLServerError defines how graphql errors should be
 // handled and logged.
-func HandleGraphQLServerError(server *handler.Server, logger *cloudLogger.Logger) {
+func HandleGraphQLServerError(server *handler.Server) {
 	server.AroundOperations(func(ctx context.Context, next graphql.OperationHandler) graphql.ResponseHandler {
 		span := trace.SpanFromContext(ctx)
 		operationContext := graphql.GetOperationContext(ctx)
@@ -140,12 +139,7 @@ func HandleGraphQLServerError(server *handler.Server, logger *cloudLogger.Logger
 			"variables", oc.Variables,
 		}
 		errMessage := fmt.Sprintf("GraphQL: %s", err)
-		if code == gqlutil.InternalServerErrorCode {
-			logger.WrapTraceContext(ctx).Errorw(errMessage, errFields...)
-		} else {
-			logger.WrapTraceContext(ctx).Warnw(errMessage, errFields...)
-		}
-		log.Println("err = ", err)
+		log.Println("Error = ", errMessage, " - ", errFields)
 		return gqlutil.ErrorPresenter(ctx, err)
 	})
 }

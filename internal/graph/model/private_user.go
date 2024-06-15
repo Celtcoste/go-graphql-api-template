@@ -12,19 +12,10 @@ type PrivateUser struct {
 
 // NewUserPrivateFromDB create a new User from a repository.User struct
 func NewUserPrivateFromDB(user repository.User) *PrivateUser {
-	var uuid *gqlutil.UUID
-	if user.ImageUUID != nil {
-		tmp := gqlutil.UUID(*user.ImageUUID)
-		uuid = &tmp
-	} else {
-		uuid = nil
-	}
 	return &PrivateUser{
 		UserInfo: &User{
-			UUID:        gqlutil.UUID(user.UUID),
-			Pseudo:      user.Pseudo,
-			Description: user.Description,
-			ImageUUID:   uuid,
+			UUID: gqlutil.UUID(user.UUID),
+			Name: user.Name,
 		},
 	}
 }

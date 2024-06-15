@@ -8,6 +8,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/celtcoste/go-graphql-api-template/internal/dataloader"
 	"github.com/celtcoste/go-graphql-api-template/internal/graph/generated"
 	"github.com/celtcoste/go-graphql-api-template/internal/graph/model"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/gqlutil"
@@ -20,7 +22,15 @@ func (r *queryResolver) Me(ctx context.Context) (*model.PrivateUser, error) {
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context, uuids []gqlutil.UUID) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	users, errs := dataloader.For(ctx).User.GetByUUID.LoadAll(ConvertArrayUUIDToString(uuids))
+	if len(errs) > 0 {
+		for _, err := range errs {
+			if err != nil {
+				graphql.AddError(ctx, err)
+			}
+		}
+	}
+	return users, nil
 }
 
 // Query returns generated.QueryResolver implementation.

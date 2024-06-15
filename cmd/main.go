@@ -12,14 +12,13 @@ import (
 	"github.com/celtcoste/go-graphql-api-template/internal/graph/generated"
 	"github.com/celtcoste/go-graphql-api-template/internal/repository"
 	"github.com/celtcoste/go-graphql-api-template/internal/server"
-	"github.com/celtcoste/go-graphql-api-template/pkg/cloud/cloudLogger"
 	"github.com/celtcoste/go-graphql-api-template/pkg/util/translation"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 )
 
 func loadConfiguration() *internal.Configuration {
-	directory := flag.String("configDir", "./", "massage.yaml file directory")
+	directory := flag.String("configDir", "./", "api-template.yaml file directory")
 	flag.Parse()
 	configuration, err := internal.NewConfiguration(*directory)
 	if err != nil {
@@ -27,15 +26,6 @@ func loadConfiguration() *internal.Configuration {
 		os.Exit(1)
 	}
 	return configuration
-}
-
-func loadCloudLogger() *cloudLogger.Logger {
-	logger, err := cloudLogger.NewLogger()
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
-	return logger
 }
 
 func loadDatabasePool(configuration *database.Configuration) *sqlx.DB {
@@ -52,10 +42,6 @@ func main() {
 	godotenv.Load()
 	configuration := loadConfiguration()
 
-	// NOTE: setup logging
-	logger := loadCloudLogger()
-	defer logger.Sync()
-
 	// NOTE: setup database pool
 	pool := loadDatabasePool(configuration.Database)
 	defer pool.Close()
@@ -69,10 +55,10 @@ func main() {
 	// Instantiate resolver
 	resolver := graph.NewResolver(repositories, translator)
 	config := generated.Config{Resolvers: resolver}
-	gqlServer := server.NewGraphQLServer(config, logger, repositories)
+	gqlServer := server.NewGraphQLServer(config, repositories)
 
 	// NOTE: create server and attach handlers to internal router.
-	api := server.NewApiTemplateServer(configuration.Server, logger)
+	api := server.NewApiTemplateServer(configuration.Server)
 	server.SetupGraphQLRoutes(
 		repositories,
 		configuration.Server.Playground,

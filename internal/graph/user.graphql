@@ -1,11 +1,6 @@
 type User {
-  uuid:                                     UUID!
-  pseudo:                                   String!
-  description:                              String
-  emailVerified:                            Boolean!
-  cguAccepted:                              Boolean!
-  provider:                                 String!
-  offerNumber:                              Int!
+  uuid:     UUID!
+  name:     String!
 }
 
 type UserConnection {
@@ -19,10 +14,5 @@ type UserEdge {
 }
 
 input UserUpdateInput {
-  description:        String
-  image:              Upload
-  provider:           String
-  acceptCGU:          Boolean
-  verifyUserEmail:    Boolean
-  notificationToken:  String
+  name:     String
 }

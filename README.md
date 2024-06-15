@@ -33,13 +33,6 @@ make migration-up
 make migration-down
 ```
 
-### Run the service
-
-```
-cd src
-go run massage.go
-```
-
 ### Local docker-compose
 
 You can run the following command from the root of the repository
@@ -54,3 +47,5 @@ The API will be running locally on the port :80
 - Add Postman files
 - make sure it's running
 - Add basic feature like notes/auth
+- Unit test
+- Add CI

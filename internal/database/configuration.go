@@ -34,11 +34,6 @@ func NewConfiguration(v *viper.Viper) (configuration *Configuration, err error) 
 	if v == nil {
 		return nil, errors.New("viper is nil")
 	}
-	v.BindEnv("database.address", "DATABASE_ADDRESS")
-	v.BindEnv("database.name", "DATABASE_NAME")
-	v.BindEnv("database.password", "DATABASE_PASSWORD")
-	v.BindEnv("database.port", "DATABASE_PORT")
-	v.BindEnv("database.username", "DATABASE_USERNAME")
 	v.SetDefault("database.port", 3306)
 	configuration = &Configuration{
 		Address:  v.GetString("database.address"),
